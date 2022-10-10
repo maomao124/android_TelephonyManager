@@ -52,6 +52,11 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         bindViews(168);
+
+        tv_rssi = findViewById(R.id.tv_rssi);
+        mpsListener = new MyPhoneStateListener();
+        telephonyManager.listen(mpsListener, 290);
+
     }
 
     private class MyPhoneStateListener extends PhoneStateListener
