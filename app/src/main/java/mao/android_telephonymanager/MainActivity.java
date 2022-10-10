@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity
                     Manifest.permission.ACCESS_COARSE_LOCATION,
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.READ_PHONE_STATE,
+                    //"android.permission.READ_PRIVILEGED_PHONE_STATE"
             };
 
     @Override
@@ -62,7 +63,8 @@ public class MainActivity extends AppCompatActivity
         tv_phone8 = (TextView) findViewById(R.id.tv_phone8);
         tv_phone9 = (TextView) findViewById(R.id.tv_phone9);
 
-        tv_phone1.setText("设备编号：" + telephonyManager.getDeviceId());
+        //这个模拟器上用不了
+        //tv_phone1.setText("设备编号：" + telephonyManager.getDeviceId());
         tv_phone2.setText("软件版本：" + (telephonyManager.getDeviceSoftwareVersion() != null ?
                 telephonyManager.getDeviceSoftwareVersion() : "未知"));
         tv_phone3.setText("运营商代号：" + telephonyManager.getNetworkOperator());
@@ -71,7 +73,8 @@ public class MainActivity extends AppCompatActivity
         tv_phone6.setText("设备当前位置：" + (telephonyManager.getCellLocation() != null ? telephonyManager
                 .getCellLocation().toString() : "未知位置"));
         tv_phone7.setText("SIM卡的国别：" + telephonyManager.getSimCountryIso());
-        tv_phone8.setText("SIM卡序列号：" + telephonyManager.getSimSerialNumber());
+        //这个没办法
+        //tv_phone8.setText("SIM卡序列号：" + telephonyManager.getSimSerialNumber());
         tv_phone9.setText("SIM卡状态：" + simState[telephonyManager.getSimState()]);
     }
 
