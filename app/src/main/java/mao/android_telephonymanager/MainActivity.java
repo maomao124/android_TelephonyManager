@@ -12,6 +12,8 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.telephony.PhoneStateListener;
+import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +30,8 @@ public class MainActivity extends AppCompatActivity
     private TextView tv_phone7;
     private TextView tv_phone8;
     private TextView tv_phone9;
+    private TextView tv_rssi;
+    private MyPhoneStateListener mpsListener;
     private TelephonyManager telephonyManager;
     private final String[] phoneType = {"未知", "2G", "3G", "4G"};
     private final String[] simState = {"状态未知", "无SIM卡", "被PIN加锁", "被PUK加锁",
@@ -49,6 +53,22 @@ public class MainActivity extends AppCompatActivity
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         bindViews(168);
     }
+
+    private class MyPhoneStateListener extends PhoneStateListener
+    {
+        private int asu = 0, lastSignal = 0;
+
+        @SuppressLint("SetTextI18n")
+        @Override
+        public void onSignalStrengthsChanged(SignalStrength signalStrength)
+        {
+            asu = signalStrength.getGsmSignalStrength();
+            lastSignal = -113 + 2 * asu;
+            tv_rssi.setText("当前手机的信号强度：" + lastSignal + " dBm");
+            super.onSignalStrengthsChanged(signalStrength);
+        }
+    }
+
 
     @SuppressLint("SetTextI18n")
     private void bindViews()
