@@ -15,11 +15,22 @@ import android.os.Bundle;
 import android.telephony.PhoneStateListener;
 import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileNotFoundException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.Date;
+
 public class MainActivity extends AppCompatActivity
 {
+
+    /**
+     * 标签
+     */
+    private static final String TAG = "MainActivity";
 
     private TextView tv_phone1;
     private TextView tv_phone2;
@@ -32,6 +43,9 @@ public class MainActivity extends AppCompatActivity
     private TextView tv_phone9;
     private TextView tv_rssi;
     private MyPhoneStateListener mpsListener;
+    /**
+     * 电话管理器
+     */
     private TelephonyManager telephonyManager;
     private final String[] phoneType = {"未知", "2G", "3G", "4G"};
     private final String[] simState = {"状态未知", "无SIM卡", "被PIN加锁", "被PUK加锁",
@@ -56,6 +70,46 @@ public class MainActivity extends AppCompatActivity
         tv_rssi = findViewById(R.id.tv_rssi);
         mpsListener = new MyPhoneStateListener();
         telephonyManager.listen(mpsListener, 290);
+
+
+        PhoneStateListener listener = new PhoneStateListener()
+        {
+            @Override
+            public void onCallStateChanged(int state, String number)
+            {
+                switch (state)
+                {
+                    // 无任何状态
+                    case TelephonyManager.CALL_STATE_IDLE:
+                        break;
+                    case TelephonyManager.CALL_STATE_OFFHOOK:
+                        break;
+                    // 来电铃响时
+                    case TelephonyManager.CALL_STATE_RINGING:
+                        OutputStream outputStream = null;
+                        try
+                        {
+                            outputStream = openFileOutput("phoneList", MODE_APPEND);
+                        }
+                        catch (FileNotFoundException e)
+                        {
+                            e.printStackTrace();
+                        }
+                        PrintStream printStream = new PrintStream(outputStream);
+                        // 将来电号码记录到文件中
+                        Log.i(TAG, "onCallStateChanged: " + number);
+                        toastShow(number + "来电");
+                        printStream.println(new Date() + " 来电：" + number);
+                        printStream.close();
+                        break;
+                    default:
+                        break;
+                }
+                super.onCallStateChanged(state, number);
+            }
+        };
+        // 监听电话通话状态的改变
+        telephonyManager.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
 
     }
 
